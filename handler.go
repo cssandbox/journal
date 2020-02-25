@@ -1,4 +1,4 @@
-package main
+package journal
 
 import (
 	"encoding/json"
@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/google/uuid"
 )
 
@@ -21,7 +20,8 @@ type entry struct {
 	Body  string `json:"body"`
 }
 
-func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+// Router - lambda handler
+func Router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	switch req.HTTPMethod {
 	case "POST":
 		return create(req)
@@ -172,9 +172,4 @@ func clientError(status int) (events.APIGatewayProxyResponse, error) {
 		StatusCode: status,
 		Body:       http.StatusText(status),
 	}, nil
-}
-
-func main() {
-	// fmt.Println(uuid.New())
-	lambda.Start(router)
 }
