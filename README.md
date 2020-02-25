@@ -13,6 +13,7 @@ Serverless, using AWS lambda written in Go
 DynomoDB
 
 # Project
+```
 .
 ├── LICENSE
 ├── README.md
@@ -23,3 +24,4 @@ DynomoDB
 ├── go.sum
 ├── handler.go  // Lambda code
 └── run         // convenience scripts
+```
