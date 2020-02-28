@@ -4,7 +4,7 @@ This project is WIP
 
 ## Plan
 
-My own online journal app. Might morph into something more.
+Personal online-journal app. Might morph into something more.
 
 ## Technology
 
