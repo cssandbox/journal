@@ -14,6 +14,11 @@ import (
 // var isbnRegexp = regexp.MustCompile(`[0-9]{3}\-[0-9]{10}`)
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
+// Journal struct
+type Journal struct {
+	Store Store
+}
+
 // Entry for journal
 type Entry struct {
 	UUID  string `json:"uuid"`
@@ -21,32 +26,21 @@ type Entry struct {
 	Body  string `json:"body"`
 }
 
-var store Store
-
-// Router request router
-type Router func(events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
-
-// InitializeHandler initializes handler
-func InitializeHandler(s Store) Router {
-	store = s
-	return router
-}
-
-// Router - lambda handler
-func router(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+// Handler - lambda handler
+func (j *Journal) Handler(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	switch {
 	case req.HTTPMethod == "POST":
-		return create(req)
+		return j.create(req)
 	case req.HTTPMethod == "GET":
-		return read(req)
+		return j.read(req)
 	case req.HTTPMethod == "PUT":
-		return update(req)
+		return j.update(req)
 	default:
 		return clientError(http.StatusMethodNotAllowed)
 	}
 }
 
-func read(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (j *Journal) read(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// Get the `isbn` query string parameter from the request and
 	// validate it.
 	uuid := req.QueryStringParameters["uuid"]
@@ -56,7 +50,7 @@ func read(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, er
 
 	var js []byte
 	if uuid == "" {
-		entries, err := store.GetItems()
+		entries, err := j.Store.GetItems()
 		if err != nil {
 			return serverError(err)
 		}
@@ -69,7 +63,7 @@ func read(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, er
 		}
 	} else {
 		// Fetch the journal Entry record from the database based on the uuid value.
-		en, err := store.GetItem(uuid)
+		en, err := j.Store.GetItem(uuid)
 		if err != nil {
 			return serverError(err)
 		}
@@ -94,7 +88,7 @@ func read(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, er
 	}, nil
 }
 
-func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (j *Journal) create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	if req.Headers["content-type"] != "application/json" && req.Headers["Content-Type"] != "application/json" {
 		return clientError(http.StatusNotAcceptable)
 	}
@@ -111,7 +105,7 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 
 	en.UUID = uuid.New().String()
 
-	err = store.PutItem(en)
+	err = j.Store.PutItem(en)
 	if err != nil {
 		return serverError(err)
 	}
@@ -122,7 +116,7 @@ func create(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	}, nil
 }
 
-func update(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (j *Journal) update(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	if req.Headers["content-type"] != "application/json" && req.Headers["Content-Type"] != "application/json" {
 		return clientError(http.StatusNotAcceptable)
 	}
@@ -133,7 +127,7 @@ func update(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 	}
 
 	// Fetch the journal entry record from the database based on the uuid value.
-	en, err := store.GetItem(uuid)
+	en, err := j.Store.GetItem(uuid)
 	if err != nil {
 		return serverError(err)
 	}
@@ -155,7 +149,7 @@ func update(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, 
 		en.Body = updateEn.Body
 	}
 
-	err = store.PutItem(en)
+	err = j.Store.PutItem(en)
 	if err != nil {
 		return serverError(err)
 	}

@@ -13,5 +13,6 @@ import (
 var db = dynamodb.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
 
 func main() {
-	lambda.Start(journal.InitializeHandler(&journal.DynamoDBStore{DB: db}))
+	j := journal.Journal{&journal.DynamoDBStore{DB: db}}
+	lambda.Start(j.Handler)
 }
