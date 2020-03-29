@@ -21,6 +21,7 @@ DynomoDB
 ├── aws         // AWS config
 ├── cmd         // main.go
 ├── db.go       // Interface to DynamoDB
+├── frontend    // ReactJS app
 ├── go.mod
 ├── go.sum
 ├── handler.go  // Lambda code
