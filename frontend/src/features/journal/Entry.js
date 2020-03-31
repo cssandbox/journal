@@ -6,7 +6,7 @@ const Entry = ({ entry }) => (
     onClick={() => {} /** dispatches action to toggle todo */}
   >
     <span>
-      {entry.title}
+      {entry.title} | {entry.body}
     </span>
   </li>
 );

@@ -6,8 +6,10 @@ const mapDispatch = { addEntry }
 
 const Journal = ({ addEntry }) => {
   const [entryTitle, setEntryTitle] = useState('')
+  const [entryBody, setEntryBody] = useState('')
 
-  const onChange = e => setEntryTitle(e.target.value)
+  const onTitleChange = e => setEntryTitle(e.target.value)
+  const onBodyChange = e => setEntryBody(e.target.value)
 
   return (
     <div>
@@ -17,11 +19,13 @@ const Journal = ({ addEntry }) => {
           if (!entryTitle.trim()) {
             return
           }
-          addEntry(entryTitle)
+          addEntry(entryTitle, entryBody.trim())
           setEntryTitle('')
+          setEntryBody('')
         }}
       >
-        <input value={entryTitle} onChange={onChange} />
+        <input value={entryTitle} onChange={onTitleChange} />
+        <input value={entryBody} onChange={onBodyChange} />
         <button type="submit">Add Entry</button>
       </form>
     </div>

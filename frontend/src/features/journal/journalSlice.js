@@ -1,23 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
-let nextEntryId = 0
+let nextEntryId = 0;
 
 const journalSlice = createSlice({
-  name: 'journal',
+  name: "journal",
   initialState: [],
   reducers: {
     addEntry: {
       reducer(state, action) {
-        const { id, title } = action.payload
-        state.push({ id, title })
+        const { uuid, title, body } = action.payload;
+        state.push({ uuid, title, body });
       },
-      prepare(title) {
-        return { payload: { title, id: nextEntryId++ } }
+      prepare(title, body) {
+        return { payload: { title, body, uuid: nextEntryId++ } };
       }
     }
   }
-})
+});
 
-export const { addEntry } = journalSlice.actions
+export const { addEntry } = journalSlice.actions;
 
-export default journalSlice.reducer
+export default journalSlice.reducer;

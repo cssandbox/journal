@@ -6,7 +6,7 @@ const JournalList = ({ entries }) => (
   <ul className="journal-list">
     {entries && entries.length
       ? entries.map((entry, index) => {
-          return <Entry key={`entry-${entry.id}`} entry={entry} />;
+          return <Entry key={`entry-${entry.uuid}`} entry={entry} />;
         })
       : "No Entries, yay!"}
   </ul>
