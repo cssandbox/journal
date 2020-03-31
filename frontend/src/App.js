@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
-import Journal from './components/Journal';
-import JournalList from './components/JournalList'
+import Journal from './features/journal/Journal';
+import JournalList from './features/journal/JournalList'
 import './App.css';
 
 function App() {

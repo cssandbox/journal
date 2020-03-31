@@ -1,43 +1,32 @@
-import React from "react";
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { addEntry } from '../../app/actions.js'
+import { addEntry } from './journalSlice'
 
-class Journal extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      input: ''
-    }
-  }
+const mapDispatch = { addEntry }
 
-  updateInput = input => {
-    this.setState({ input });
-  };
+const Journal = ({ addEntry }) => {
+  const [entryTitle, setEntryTitle] = useState('')
 
-  handleAddEntry = () => {
-    // dispatches actions to add todo
-    this.props.addEntry(this.state.input)
+  const onChange = e => setEntryTitle(e.target.value)
 
-    // sets state back to empty string
-    this.setState({ input: '' })
-  }
+  return (
+    <div>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          if (!entryTitle.trim()) {
+            return
+          }
+          addEntry(entryTitle)
+          setEntryTitle('')
+        }}
+      >
+        <input value={entryTitle} onChange={onChange} />
+        <button type="submit">Add Entry</button>
+      </form>
+    </div>
+  )
 
-  render() {
-    return (
-      <div>
-        <input
-          onChange={e => this.updateInput(e.target.value)}
-          value={this.state.input}
-        />
-        <button className="add-entry" onClick={this.handleAddTodo}>
-          Add Entry
-        </button>
-      </div>
-    )
-  }
 }
 
-export default connect(
-  null,
-  { addEntry }
-)(Journal)
+export default connect(null, mapDispatch)(Journal)

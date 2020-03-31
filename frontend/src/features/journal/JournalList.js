@@ -1,8 +1,6 @@
 import React from "react";
 import Entry from "./Entry";
 import { connect } from "react-redux";
-import { getEntries } from "../redux/selectors";
-
 
 const JournalList = ({ entries }) => (
   <ul className="journal-list">
@@ -14,4 +12,13 @@ const JournalList = ({ entries }) => (
   </ul>
 );
   
-export default connect(state => ({ entries: getEntries(state) }))(JournalList);
+
+const mapStateToProps = state => ({
+    entries: state.journal
+  })
+  
+export default connect(
+    mapStateToProps,
+    null
+  )(JournalList)
+
