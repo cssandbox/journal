@@ -85,6 +85,7 @@ func (j *Journal) read(req events.APIGatewayProxyRequest) (events.APIGatewayProx
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Body:       string(js),
+		Headers:    map[string]string{"Access-Control-Allow-Origin": "https://www.chaiapps.com"},
 	}, nil
 }
 
@@ -112,7 +113,10 @@ func (j *Journal) create(req events.APIGatewayProxyRequest) (events.APIGatewayPr
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Headers:    map[string]string{"Location": fmt.Sprintf("/entries?uuid=%s", en.UUID)},
+		Headers: map[string]string{
+			"Location":                    fmt.Sprintf("/entries?uuid=%s", en.UUID),
+			"Access-Control-Allow-Origin": "https://www.chaiapps.com",
+		},
 	}, nil
 }
 
@@ -156,7 +160,7 @@ func (j *Journal) update(req events.APIGatewayProxyRequest) (events.APIGatewayPr
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 201,
-		Headers:    map[string]string{"Location": fmt.Sprintf("/entries?uuid=%s", en.UUID)},
+		Headers:    map[string]string{"Access-Control-Allow-Origin": "https://www.chaiapps.com"},
 	}, nil
 }
 

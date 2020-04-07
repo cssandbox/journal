@@ -17,3 +17,4 @@ dist/
 
 # AWS sensitive parts
 aws/commands.md
+.DS_Store
