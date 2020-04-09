@@ -1,6 +1,9 @@
 package journal
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -78,21 +81,23 @@ func (store *DynamoDBStore) GetItem(UUID string) (*Entry, error) {
 
 //PutItem implementation for Store interface
 func (store *DynamoDBStore) PutItem(en *Entry) error {
+
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String("Journal"),
-		Item: map[string]*dynamodb.AttributeValue{
-			"UUID": {
-				S: aws.String(en.UUID),
-			},
-			"Title": {
-				S: aws.String(en.Title),
-			},
-			"Body": {
-				S: aws.String(en.Body),
-			},
-		},
+		Item:      marshalledEntry(en),
 	}
 
 	_, err := store.DB.PutItem(input)
 	return err
+}
+
+func marshalledEntry(en *Entry) map[string]*dynamodb.AttributeValue {
+	av, err := dynamodbattribute.MarshalMap(en)
+	if err != nil {
+		fmt.Println("Got error marshalling Entry item:")
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	fmt.Println(av)
+	return av
 }
